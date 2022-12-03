@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  dev-db:
+    container_name: dev_pg_container
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: dev
+    networks:
+      - nest-network
+
+  test-db:
+    container_name: test_pg_container
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: test
+    networks:
+      - nest-network
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - 5050:80
+    networks:
+      - nest-network
+
+networks:
+  nest-network:
