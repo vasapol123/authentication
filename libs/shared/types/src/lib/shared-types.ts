@@ -8,3 +8,8 @@ export interface CreateUser {
 export interface UpdateUser extends Partial<CreateUser> {
   id: number;
 }
+
+export interface Tokens {
+  jwtAccessToken: string;
+  jwtRefreshToken: string;
+}
