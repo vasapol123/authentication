@@ -13,3 +13,20 @@ export interface Tokens {
   jwtAccessToken: string;
   jwtRefreshToken: string;
 }
+
+export interface Signup {
+  email: string;
+  displayName: string;
+  password: string;
+}
+
+export type Signin = Omit<Signup, 'displayName'>;
+
+export interface JwtPayload {
+  sub: number;
+  email: string;
+}
+
+export interface JwtPayloadWithRefreshToken extends JwtPayload {
+  refreshToken: string;
+}
