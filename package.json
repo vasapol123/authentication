@@ -6,7 +6,10 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "server:test": "nx run server:test"
+    "server:test": "nx run server:test",
+    "db:restart": "docker-compose down && docker-compose up -d && timeout 1",
+    "preserver:int": "yarn db:restart && dotenv -e .env.test -- prisma migrate reset --force",
+    "server:int": "dotenv -e .env.test -- nx run server:int"
   },
   "private": true,
   "dependencies": {
@@ -46,11 +49,13 @@
     "@types/passport-jwt": "^3.0.7",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
+    "dotenv-cli": "^6.0.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "28.1.1",
     "jest-environment-jsdom": "28.1.1",
+    "jwt-decode": "^3.1.2",
     "nx": "15.2.4",
     "prettier": "^2.8.0",
     "prisma": "^4.7.1",

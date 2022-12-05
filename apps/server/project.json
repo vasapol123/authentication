@@ -54,6 +54,14 @@
         "jestConfig": "apps/server/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "int": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/server/jest-int.config.ts",
+        "passWithNoTests": true
+      }
     }
   },
   "tags": []
