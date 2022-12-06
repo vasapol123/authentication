@@ -5,6 +5,7 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app/app.module';
 
@@ -16,6 +17,7 @@ async function bootstrap() {
     credentials: true,
     origin: 'http://localhost:4200',
   });
+  app.use(cookieParser());
   const port = process.env.PORT || 3333;
   await app.listen(port);
   Logger.log(

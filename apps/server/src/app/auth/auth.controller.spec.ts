@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../app.module';
+import { Response } from 'express';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -9,6 +10,11 @@ import { SignupDto } from './dto/signup.dto';
 describe('AuthController', () => {
   let controller: AuthController;
 
+  const mockResponse = {
+    cookie: jest.fn().mockImplementation((x) => x),
+    clearCookie: jest.fn().mockImplementation((x) => x),
+  } as unknown as Response;
+
   const mockAuthService = {
     signupLocal: jest.fn().mockImplementation((dto) => {
       return Promise.resolve({
@@ -17,6 +23,12 @@ describe('AuthController', () => {
       });
     }),
     signinLocal: jest.fn().mockImplementation((dto) => {
+      return Promise.resolve({
+        jwtAccessToken: 'fakeJwtAccessToken',
+        jwtRefreshToken: 'fakeJwtRefreshToken',
+      });
+    }),
+    rotateRefreshTokens: jest.fn().mockImplementation((dto) => {
       return Promise.resolve({
         jwtAccessToken: 'fakeJwtAccessToken',
         jwtRefreshToken: 'fakeJwtRefreshToken',
@@ -48,7 +60,9 @@ describe('AuthController', () => {
         password: 'fakeHashedPassword',
       };
 
-      await expect(controller.signupLocal(signupDto)).resolves.toEqual({
+      await expect(
+        controller.signupLocal(signupDto, mockResponse),
+      ).resolves.toEqual({
         jwtAccessToken: expect.any(String),
         jwtRefreshToken: expect.any(String),
       });
@@ -64,7 +78,9 @@ describe('AuthController', () => {
         password: 'fakeHashedPassword',
       };
 
-      await expect(controller.signinLocal(signinDto)).resolves.toEqual({
+      await expect(
+        controller.signinLocal(signinDto, mockResponse),
+      ).resolves.toEqual({
         jwtAccessToken: expect.any(String),
         jwtRefreshToken: expect.any(String),
       });
@@ -75,7 +91,24 @@ describe('AuthController', () => {
 
   describe('logout', () => {
     it('should successfully logout a user', async () => {
-      await expect(controller.logout(Date.now())).resolves.toEqual(true);
+      await expect(
+        controller.logout(Date.now(), mockResponse),
+      ).resolves.toEqual(true);
+    });
+  });
+
+  describe('rotateRefreshToken', () => {
+    it('shouch perform refresh token rotation', async () => {
+      await expect(
+        controller.rotateRefreshToken(
+          Date.now(),
+          'fakeJwtRefreshToken',
+          mockResponse,
+        ),
+      ).resolves.toEqual({
+        jwtAccessToken: expect.any(String),
+        jwtRefreshToken: expect.any(String),
+      });
     });
   });
 });
