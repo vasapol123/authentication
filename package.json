@@ -6,6 +6,8 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
+    "client:start": "nx run client:serve",
+    "server:start": "nx run server:serve",
     "server:test": "nx run server:test",
     "db:restart": "docker-compose down && docker-compose up -d && timeout 1",
     "preserver:int": "yarn db:restart && dotenv -e .env.test -- prisma migrate reset --force",
@@ -13,6 +15,7 @@
   },
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^2.9.10",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
@@ -22,6 +25,7 @@
     "@nestjs/swagger": "^6.1.3",
     "@prisma/client": "^4.7.1",
     "argon2": "^0.30.2",
+    "axios": "^1.2.1",
     "class-validator": "^0.13.2",
     "core-js": "^3.6.5",
     "lodash": "^4.17.21",
@@ -32,10 +36,12 @@
     "passport-local": "^1.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.40.0",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
     "rxjs": "^7.0.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@nestjs/schematics": "^9.0.0",
