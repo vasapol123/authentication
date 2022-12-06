@@ -18,6 +18,7 @@ export interface Signup {
   email: string;
   displayName: string;
   password: string;
+  passwordConfirmation?: string;
 }
 
 export type Signin = Omit<Signup, 'displayName'>;
