@@ -1,4 +1,5 @@
 import styles from './index.module.scss';
+import LoginComponent from '../components/login';
 
 export function Index() {
   /*
@@ -8,6 +9,7 @@ export function Index() {
    */
   return (
     <div className={styles.page}>
+      <LoginComponent />
       <div className="wrapper">
         <div className="container">
           <div id="welcome">

@@ -1,13 +1,16 @@
 import React from 'react';
 import styles from './login.module.scss';
+import { signIn } from 'next-auth/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Signin as FormValues } from '@authentication/types';
 
-import axios from '../../axios.config';
-import { loginSchema } from '../../validation/schema/login';
+import { loginSchema } from '../../validation/schema/login.schema';
+import useAuth from '../../hooks/useAuth';
 
-function Login(): JSX.Element {
+function Signin(): JSX.Element {
+  const isAuth = useAuth(true);
+
   const {
     register,
     handleSubmit,
@@ -15,10 +18,15 @@ function Login(): JSX.Element {
   } = useForm<FormValues>({
     resolver: yupResolver(loginSchema),
   });
+
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await axios.post('api/auth/local/signin', data);
-      console.log(res);
+      const res = await signIn('credentials', {
+        ...data,
+        callbackUrl: `${window.location.origin}`,
+        redirect: false,
+      });
+      console.log(res.error);
     } catch (e) {
       console.log(e);
     }
@@ -49,4 +57,4 @@ function Login(): JSX.Element {
   );
 }
 
-export default Login;
+export default Signin;

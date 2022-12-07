@@ -21,7 +21,7 @@ export interface Signup {
   passwordConfirmation?: string;
 }
 
-export type Signin = Omit<Signup, 'displayName'>;
+export type Signin = Pick<Signup, 'email' | 'password'>;
 
 export interface JwtPayload {
   sub: number;
