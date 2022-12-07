@@ -9,7 +9,6 @@ import { AuthModule } from './auth/auth.module';
 import { AccessTokenGuard } from '../common/guards/access-token.guard';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CookieModule } from './cookie/cookie.module';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { CookieModule } from './cookie/cookie.module';
     UsersModule,
     TokensModule,
     AuthModule,
-    CookieModule,
   ],
   controllers: [AppController],
   providers: [
