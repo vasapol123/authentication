@@ -1,27 +1,42 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
+import {
+  Body,
+  Controller,
+  Req,
+  Post,
+  UseGuards,
+  HttpCode,
+} from '@nestjs/common';
+import { Request } from 'express';
+import { Tokens, UserProfile } from '@authentication/types';
 
 import { Public } from '../../../common/decorator/public.decorator';
 import { GoogleOauthService } from './google-oauth.service';
 import { GoogleOauthGuard } from './guards/google-oauth.guard';
-import { UserProfile } from './types/user-profile.type';
+import { SigninDto } from '../../auth/dto/signin.dto';
+import { HttpStatus } from '@nestjs/common/enums';
 
 @Controller('auth/google')
 export class GoogleOauthController {
   constructor(private readonly googleOauthService: GoogleOauthService) {}
 
-  @Get('/')
+  @Post('signin')
   @Public()
   @UseGuards(GoogleOauthGuard)
-  public async googleAuth(@Req() _req: Request) {
-    // Guard redirects
+  public googleAuthSignin(@Req() req: Request): Promise<Tokens> {
+    return this.googleOauthService.signinGoogle(req.user as UserProfile);
   }
 
-  @Get('redirect')
+  @Post('connect')
   @Public()
   @UseGuards(GoogleOauthGuard)
-  public async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    await this.googleOauthService.signinGoogle(req.user as UserProfile);
-    return res.redirect('/api');
+  @HttpCode(HttpStatus.CREATED)
+  public googleAuthConnect(
+    @Req() req: Request,
+    @Body() connectionDto: SigninDto,
+  ) {
+    return this.googleOauthService.connectLocal(
+      req.user as UserProfile,
+      connectionDto,
+    );
   }
 }

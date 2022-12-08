@@ -1,17 +1,14 @@
-import React from 'react';
-import styles from './login.module.scss';
-import { signIn } from 'next-auth/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { signIn } from 'next-auth/react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Signin as FormValues } from '@authentication/types';
 
 import { loginSchema } from '../../validation/schema/login.schema';
-import useAuth from '../../hooks/useAuth';
 import axios from '../../axios.config';
+import { parseCookies } from 'nookies';
 
-function Signin(): JSX.Element {
-  // const isAuth = useAuth(true);
-
+function Connection() {
   const {
     register,
     handleSubmit,
@@ -21,21 +18,20 @@ function Signin(): JSX.Element {
   });
 
   const onSubmit = async (data: FormValues) => {
+    const cookies = parseCookies();
     try {
-      const res = await signIn('credentials', {
-        ...data,
-        callbackUrl: `${window.location.origin}`,
-        redirect: false,
-      });
-      console.log(res.error);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const onGoogleButtonClick = async () => {
-    try {
-      const res = await signIn('google');
+      const res = await axios.post(
+        'api/auth/google/connect',
+        {
+          email: data.email,
+          password: data.password,
+        },
+        {
+          headers: {
+            id_token: cookies.GOOGLE_ID_TOKEN,
+          },
+        },
+      );
     } catch (e) {
       console.log(e);
     }
@@ -43,7 +39,7 @@ function Signin(): JSX.Element {
 
   return (
     <main>
-      <div>Login</div>
+      <div>Connection</div>
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor='email'>Email</label>
@@ -62,12 +58,8 @@ function Signin(): JSX.Element {
           <input type='submit' value='Submit' />
         </form>
       </div>
-
-      <div>
-        <button onClick={onGoogleButtonClick}>Google</button>
-      </div>
     </main>
   );
 }
 
-export default Signin;
+export default Connection;

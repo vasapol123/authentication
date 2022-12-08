@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { AccessTokenGuard } from '../common/guards/access-token.guard';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { GoogleOauthModule } from './connection/google/google-oauth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AppService } from './app.service';
     UsersModule,
     TokensModule,
     AuthModule,
+    GoogleOauthModule,
   ],
   controllers: [AppController],
   providers: [

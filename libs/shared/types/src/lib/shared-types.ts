@@ -31,3 +31,10 @@ export interface JwtPayload {
 export interface JwtPayloadWithRefreshToken extends JwtPayload {
   refreshToken: string;
 }
+
+export interface UserProfile {
+  provider: string;
+  providerId: string;
+  email: string;
+  displayName: string;
+}

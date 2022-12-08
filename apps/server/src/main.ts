@@ -15,7 +15,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.enableCors({
     credentials: true,
-    origin: 'http://localhost:4200',
+    origin: 'http://localhost:3000',
   });
   app.use(cookieParser());
   const port = process.env.PORT || 3333;

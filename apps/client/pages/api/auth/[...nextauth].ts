@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Signin, Tokens } from '@authentication/types';
+import { Signin, Tokens, UserProfile } from '@authentication/types';
 import { AxiosResponse } from 'axios';
-import { NextApiHandler } from 'next';
+import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import { setCookie } from 'nookies';
 
 import axios from '../../../axios.config';
+
+let googleOauthTokens: Tokens | undefined;
 
 async function refreshAccessToken(tokenObject: Tokens): Promise<JWT> {
   try {
@@ -19,8 +23,6 @@ async function refreshAccessToken(tokenObject: Tokens): Promise<JWT> {
         },
       },
     );
-
-    console.log(tokensResponse);
 
     return {
       ...tokenObject,
@@ -37,6 +39,10 @@ async function refreshAccessToken(tokenObject: Tokens): Promise<JWT> {
 }
 
 const providers = [
+  GoogleProvider({
+    clientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+  }),
   CredentialsProvider({
     name: 'Credentials',
     credentials: {},
@@ -63,45 +69,75 @@ const providers = [
   }),
 ];
 
-const callbacks: NextAuthOptions['callbacks'] = {
-  async jwt({ token, user }): Promise<JWT> {
-    if (user) {
-      token.jwtAccessToken = user.jwtAccessToken;
-      token.jwtAccessTokenExpiry = Date.now() + 15 * 60 * 1000;
-      token.jwtRefreshToken = user.jwtRefreshToken;
-    }
+export const nextAuthOptions = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+): NextAuthOptions => {
+  return {
+    providers,
+    callbacks: {
+      async signIn({ account }): Promise<boolean> {
+        if (account.provider === 'google') {
+          setCookie({ res }, 'GOOGLE_ID_TOKEN', account.id_token, {
+            maxAge: 60 * 60 * 1000,
+            sameSite: 'strict',
+            path: '/',
+          });
 
-    const shouldRefreshTime = Math.round(
-      token.jwtAccessTokenExpiry - 3 * 60 * 1000 - Date.now(),
-    );
+          try {
+            const res = await axios.post(
+              '/api/auth/google/signin',
+              {},
+              {
+                headers: {
+                  id_token: account.id_token,
+                },
+              },
+            );
+            googleOauthTokens = res.data;
+          } catch (e) {
+            return false;
+          }
+        }
+        return true;
+      },
+      async jwt({ token, user }): Promise<JWT> {
+        if (user) {
+          token.jwtAccessToken =
+            user.jwtAccessToken || googleOauthTokens.jwtAccessToken;
+          token.jwtAccessTokenExpiry = Date.now() + 15 * 60 * 1000;
+          token.jwtRefreshToken =
+            user.jwtRefreshToken || googleOauthTokens.jwtRefreshToken;
+        }
 
-    console.log(shouldRefreshTime);
+        const shouldRefreshTime = Math.round(
+          token.jwtAccessTokenExpiry - 3 * 60 * 1000 - Date.now(),
+        );
 
-    if (shouldRefreshTime > 0) {
-      return Promise.resolve(token);
-    }
+        if (shouldRefreshTime > 0) {
+          return Promise.resolve(token);
+        }
 
-    const result = refreshAccessToken(token);
-    return Promise.resolve(result);
-  },
-  async session({ session, token }) {
-    session.jwtAccessToken = token.jwtAccessToken;
-    session.jwtAccessTokenExpiry = token.jwtAccessTokenExpiry;
-    session.error = token.error;
+        const result = refreshAccessToken(token);
+        return Promise.resolve(result);
+      },
+      async session({ session, token }) {
+        session.jwtAccessToken = token.jwtAccessToken;
+        session.jwtAccessTokenExpiry = token.jwtAccessTokenExpiry;
+        session.error = token.error;
 
-    return Promise.resolve(session);
-  },
+        return Promise.resolve(session);
+      },
+    },
+    pages: {
+      signIn: '/signin',
+      error: '/connection',
+      newUser: undefined,
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+  };
 };
 
-export const options: NextAuthOptions = {
-  providers,
-  callbacks,
-  pages: {
-    signIn: '/signin',
-    newUser: undefined,
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-};
-
-const AuthHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
+const AuthHandler: NextApiHandler = (req, res) =>
+  NextAuth(req, res, nextAuthOptions(req, res));
 export default AuthHandler;

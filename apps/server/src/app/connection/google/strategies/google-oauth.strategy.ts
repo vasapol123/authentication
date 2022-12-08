@@ -1,34 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
-
-import { UserProfile } from '../types/user-profile.type';
+import { UserProfile } from '@authentication/types';
+import { Strategy } from 'passport-custom';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 @Injectable()
 export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(config: ConfigService) {
-    super({
-      clientID: config.get<string>('GOOGLE_OAUTH_CLIENT_ID'),
-      clientSecret: config.get<string>('GOOGLE_OAUTH_CLIENT_SECRET'),
-      callbackURL: config.get<string>('GOOGLE_OAUTH_REDIRECT_URL'),
-      scope: ['email', 'profile'],
-    });
+  static clientId: string;
+
+  constructor(readonly config: ConfigService) {
+    super();
+    GoogleOauthStrategy.clientId = config.get<string>('GOOGLE_OAUTH_CLIENT_ID');
   }
 
-  async validate(
-    _accessToken: string,
-    _refreshToken: string,
-    profile: Profile,
-    done: VerifyCallback,
-  ) {
-    const { id, emails, provider, displayName } = profile;
-    const user: UserProfile = {
-      provider,
-      providerId: id,
-      email: emails[0].value,
-      displayName,
-    };
-    done(null, user);
+  public async validate(req: Request): Promise<UserProfile> | null {
+    try {
+      if (
+        req.headers &&
+        'id_token' in req.headers &&
+        req.headers.id_token.length > 0
+      ) {
+        const client = new OAuth2Client(GoogleOauthStrategy.clientId);
+        const payload: TokenPayload = await client
+          .verifyIdToken({
+            idToken: req.headers.id_token as string,
+            audience: GoogleOauthStrategy.clientId,
+          })
+          .then((payload) => {
+            return payload.getPayload();
+          });
+
+        const user: UserProfile = {
+          provider: 'google',
+          providerId: payload.sub,
+          email: payload.email,
+          displayName: payload.name,
+        };
+
+        return user;
+      }
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 }

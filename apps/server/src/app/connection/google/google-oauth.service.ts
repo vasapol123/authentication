@@ -1,10 +1,15 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
-import { Tokens } from '@authentication/types';
+import {
+  Injectable,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
+import { Tokens, UserProfile } from '@authentication/types';
+import * as argon2 from 'argon2';
 
 import { PrismaService } from '../../prisma/prisma.service';
-import { UserProfile } from './types/user-profile.type';
 import { UsersService } from '../../users/users.service';
 import { TokensService } from '../../tokens/tokens.service';
+import { SigninDto } from '../../auth/dto/signin.dto';
 
 @Injectable()
 export class GoogleOauthService {
@@ -35,5 +40,35 @@ export class GoogleOauthService {
     );
 
     return tokens;
+  }
+
+  public async connectLocal(
+    userProfile: UserProfile,
+    connectionDto: SigninDto,
+  ) {
+    const user = await this.usersService.findUserByEmail(connectionDto.email);
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
+
+    const passwordMatches = await argon2.verify(
+      user.hashedPassword,
+      connectionDto.password,
+    );
+    if (!passwordMatches) {
+      throw new BadRequestException('Password invalid');
+    }
+
+    await this.prisma.externalAuths.create({
+      data: {
+        provider: userProfile.provider,
+        providerId: userProfile.providerId,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
   }
 }
