@@ -2,13 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import NextAuth from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import { Tokens } from '@authentication/types';
+import { JwtPayload, Tokens } from '@authentication/types';
 
 declare module 'next-auth' {
   /**
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface Session extends Omit<Tokens, 'jwtRefreshToken'> {
+    user: JwtPayload;
     jwtAccessTokenExpiry?: number;
     error?: 'RefreshAccessTokenError';
   }
@@ -21,6 +22,7 @@ declare module 'next-auth/jwt' {
    * Returned by the `jwt` callback and `getToken`, when using JWT sessions
    */
   interface JWT extends Tokens {
+    user: JwtPayload;
     jwtAccessTokenExpiry?: number;
     error?: 'RefreshAccessTokenError';
   }

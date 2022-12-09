@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Signin, Tokens, UserProfile } from '@authentication/types';
+import { JwtPayload, Signin, Tokens } from '@authentication/types';
 import { AxiosResponse } from 'axios';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
@@ -10,9 +10,9 @@ import { setCookie } from 'nookies';
 
 import axios from '../../../axios.config';
 
-let googleOauthTokens: Tokens | undefined;
-
-async function refreshAccessToken(tokenObject: Tokens): Promise<JWT> {
+async function refreshAccessToken(
+  tokenObject: Tokens & { user: JwtPayload },
+): Promise<JWT> {
   try {
     const tokensResponse: AxiosResponse<Tokens> = await axios.post(
       '/api/auth/refresh',
@@ -24,13 +24,15 @@ async function refreshAccessToken(tokenObject: Tokens): Promise<JWT> {
       },
     );
 
+    console.log(tokenObject);
+
     return {
       ...tokenObject,
       jwtAccessToken: tokensResponse.data.jwtAccessToken,
       jwtAccessTokenExpiry: Date.now() + 15 * 60 * 1000,
       jwtRefreshToken: tokensResponse.data.jwtRefreshToken,
     };
-  } catch (error) {
+  } catch (e) {
     return {
       ...tokenObject,
       error: 'RefreshAccessTokenError',
@@ -73,13 +75,15 @@ export const nextAuthOptions = (
   req: NextApiRequest,
   res: NextApiResponse,
 ): NextAuthOptions => {
+  let googleOauthTokens: Tokens | undefined;
+
   return {
     providers,
     callbacks: {
       async signIn({ account }): Promise<boolean> {
         if (account.provider === 'google') {
           setCookie({ res }, 'GOOGLE_ID_TOKEN', account.id_token, {
-            maxAge: 60 * 60 * 1000,
+            maxAge: 60 * 60,
             sameSite: 'strict',
             path: '/',
           });
@@ -103,11 +107,23 @@ export const nextAuthOptions = (
       },
       async jwt({ token, user }): Promise<JWT> {
         if (user) {
+          const userResponse: AxiosResponse<JwtPayload> = await axios.get(
+            '/api/users',
+            {
+              headers: {
+                Authorization: `bearer ${
+                  user.jwtAccessToken || googleOauthTokens.jwtAccessToken
+                }`,
+              },
+            },
+          );
+
           token.jwtAccessToken =
             user.jwtAccessToken || googleOauthTokens.jwtAccessToken;
           token.jwtAccessTokenExpiry = Date.now() + 15 * 60 * 1000;
           token.jwtRefreshToken =
             user.jwtRefreshToken || googleOauthTokens.jwtRefreshToken;
+          token.user = userResponse.data;
         }
 
         const shouldRefreshTime = Math.round(
@@ -124,6 +140,7 @@ export const nextAuthOptions = (
       async session({ session, token }) {
         session.jwtAccessToken = token.jwtAccessToken;
         session.jwtAccessTokenExpiry = token.jwtAccessTokenExpiry;
+        session.user = token.user;
         session.error = token.error;
 
         return Promise.resolve(session);

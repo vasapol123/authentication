@@ -26,6 +26,7 @@ export type Signin = Pick<Signup, 'email' | 'password'>;
 export interface JwtPayload {
   sub: number;
   email: string;
+  displayName: string;
 }
 
 export interface JwtPayloadWithRefreshToken extends JwtPayload {

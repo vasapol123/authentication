@@ -2,13 +2,12 @@ import {
   Controller,
   Post,
   Body,
-  Res,
+  Get,
   HttpCode,
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { Tokens } from '@authentication/types';
-import { Response } from 'express';
+import { JwtPayload, Tokens } from '@authentication/types';
 
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
@@ -21,6 +20,12 @@ import { RefreshTokenGuard } from '../../common/guards/refresh-token.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('user')
+  @HttpCode(HttpStatus.OK)
+  public getCurrentUserInfo(@GetCurrentUser() user: JwtPayload): JwtPayload {
+    return user;
+  }
 
   @Public()
   @Post('local/signup')

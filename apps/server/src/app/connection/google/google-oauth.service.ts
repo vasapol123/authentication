@@ -33,7 +33,11 @@ export class GoogleOauthService {
 
     const user = await this.usersService.findUserById(externalAuth.userId);
 
-    const tokens = await this.tokensService.getTokens(user.id, user.email);
+    const tokens = await this.tokensService.getTokens(
+      user.id,
+      user.email,
+      user.displayName,
+    );
     await this.tokensService.updateRefreshToken(
       user.id,
       tokens.jwtRefreshToken,

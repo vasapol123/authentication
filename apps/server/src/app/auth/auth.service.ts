@@ -23,7 +23,11 @@ export class AuthService {
       hashedPassword,
     });
 
-    const tokens = await this.tokensService.getTokens(user.id, user.email);
+    const tokens = await this.tokensService.getTokens(
+      user.id,
+      user.email,
+      user.displayName,
+    );
     await this.tokensService.updateRefreshToken(
       user.id,
       tokens.jwtRefreshToken,
@@ -46,7 +50,11 @@ export class AuthService {
       throw new BadRequestException('Password invalid');
     }
 
-    const tokens = await this.tokensService.getTokens(user.id, user.email);
+    const tokens = await this.tokensService.getTokens(
+      user.id,
+      user.email,
+      user.displayName,
+    );
     await this.tokensService.updateRefreshToken(
       user.id,
       tokens.jwtRefreshToken,

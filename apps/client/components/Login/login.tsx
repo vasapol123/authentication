@@ -1,10 +1,13 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
-import axios from '../axios.config';
+import { destroyCookie } from 'nookies';
+import axios from '../../axios.config';
 
 export default function LoginComponent() {
   const { data: session } = useSession();
 
   const onLogoutButtonClick = async () => {
+    destroyCookie(null, 'GOOGLE_ID_TOKEN');
+
     await axios.post(
       '/api/auth/logout',
       {},
@@ -23,7 +26,7 @@ export default function LoginComponent() {
   if (session) {
     return (
       <>
-        Signed in as {session.user.email} <br />
+        Signed in as {session.user.displayName} <br />
         <input type='button' value='Logout' onClick={onLogoutButtonClick} />
       </>
     );
