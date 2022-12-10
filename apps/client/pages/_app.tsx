@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
-import './styles.scss';
+import './global.scss';
 import RefreshTokenHandler from '../components/refreshTokenHandler';
 
 function CustomApp({ Component, pageProps }: AppProps) {

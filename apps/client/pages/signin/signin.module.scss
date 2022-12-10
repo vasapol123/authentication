@@ -1,4 +1,4 @@
-@use '../../common/scss/variables' as var;
+@import '../../scss/abstracts/variables';
 
 .container {
   display: flex;
@@ -17,31 +17,32 @@
   margin-bottom: 16px;
   font-size: 48px;
   font-weight: 500;
-  font-family: var.$header-font;
+  font-family: $header-font;
   text-align: center;
+}
+
+%input {
+  width: 100%;
+  font-size: 16px;
+  border-width: 2px;
+  border-color: #000;
+  border-radius: 6px;
+  padding: 14px 12px;
+  user-select: auto;
 }
 
 .form {
   width: 100%;
 
-  &__input {
-    width: 100%;
-    font-family: inherit;
-    font-size: 16px;
-    border-width: 2px;
-    border-color: #000;
-    border-radius: 6px;
-    padding: 14px 12px;
-    user-select: auto;
-  }
-
   &__email, &__password {
-    @extend .form__input;
+    @extend %input;
+
     margin-bottom: 16px;
   }
   
   &__submit {
-    @extend .form__input;
+    @extend %input;
+
     color: #FFF; 
     background-color: #000;
     cursor: pointer;
@@ -78,7 +79,8 @@
 }
 
 .google {
-  @extend .form__input;
+  @extend %input;
+
   padding: 13px 12px;
   border-width: 2px;
   border-color: #000;
@@ -99,7 +101,6 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    font-family: inherit;
     font-size: inherit;
     background-color: transparent;
     pointer-events: none;
