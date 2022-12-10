@@ -9,3 +9,7 @@ $content-font: 'Inter', sans-serif;
 
 /// @type List
 $header-font: 'Space Grotesk', sans-serif;
+
+/// Container's maximum width
+/// @type Length
+$max-width: 400px !default;
