@@ -1,12 +1,11 @@
-@import '../../scss/abstracts/variables';
+@use 'sass:map';
+@import '../../scss/main';
 
 .container {
+  @extend %wrapper !optional;
+
   display: flex;
-  max-width: 400px;
-  width: 100%;
   height: 100vh;
-  margin: 0 auto;
-  padding: 0 32px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -14,21 +13,11 @@
 
 .title {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   font-size: 48px;
   font-weight: 500;
   font-family: $header-font;
   text-align: center;
-}
-
-%input {
-  width: 100%;
-  font-size: 16px;
-  border-width: 2px;
-  border-color: #000;
-  border-radius: 6px;
-  padding: 14px 12px;
-  user-select: auto;
 }
 
 .form {
@@ -104,5 +93,17 @@
     font-size: inherit;
     background-color: transparent;
     pointer-events: none;
+  }
+}
+
+.link {
+  color: #4B5563;
+  margin-top: 16px;
+
+  &__signin {
+    margin-left: 6px;
+    cursor: pointer;
+    user-select: none;
+    color: map.get($colors, 'link')
   }
 }

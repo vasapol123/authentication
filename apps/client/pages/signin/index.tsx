@@ -77,6 +77,12 @@ function Signin(): JSX.Element {
           <span>Continue with Google</span>
         </button>
       </div>
+      <div className={styles.link}>
+        No account?
+        <span onClick={() => signIn()} className={styles.link__signin}>
+          Create account
+        </span>
+      </div>
     </main>
   );
 }
