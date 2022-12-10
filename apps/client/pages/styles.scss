@@ -1,0 +1,30 @@
+@use '../common/scss/variables' as var;
+
+html {
+  -webkit-text-size-adjust: 100%;
+  font-family: var.$content-font;
+  line-height: normal;
+}
+
+body {
+  font-family: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+h1,
+h2,
+p,
+pre {
+  margin: 0;
+}
+
+*,
+::before,
+::after {
+  font-weight: 500;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}

@@ -1,10 +1,12 @@
 import React from 'react';
-import styles from './login.module.scss';
+import styles from './signin.module.scss';
 import { signIn } from 'next-auth/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Signin as FormValues } from '@authentication/types';
+import Image from 'next/image';
 
+import GoogleIcon from '../../assets/google_icon_ios.svg';
 import { loginSchema } from '../../validation/schema/login.schema';
 import useAuth from '../../hooks/useAuth';
 import axios from '../../axios.config';
@@ -42,29 +44,38 @@ function Signin(): JSX.Element {
   };
 
   return (
-    <main>
-      <div>Login</div>
-      <div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <label htmlFor='email'>Email</label>
-          <input
-            {...register('email', { required: true })}
-            placeholder='email'
-          />
-          <p>{errors.email?.message as string}</p>
-          <label htmlFor='password'>Password</label>
-          <input
-            {...register('password', { required: true })}
-            type='password'
-            placeholder='password'
-          />
-          <p>{errors.password?.message as string}</p>
-          <input type='submit' value='Submit' />
-        </form>
+    <main className={styles.container}>
+      <div className={styles.title}>Sign In</div>
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        <input
+          {...register('email', { required: true })}
+          placeholder='Email'
+          className={styles.form__email}
+        />
+        <p>{errors.email?.message as string}</p>
+        <input
+          {...register('password', { required: true })}
+          type='password'
+          placeholder='Password'
+          className={styles.form__password}
+        />
+        <p>{errors.password?.message as string}</p>
+        <input type='submit' value='Submit' className={styles.form__submit} />
+      </form>
+
+      <div className={styles.or}>
+        <span className={styles.or__text}>or</span>
       </div>
 
-      <div>
-        <button onClick={onGoogleButtonClick}>Google</button>
+      <div className={styles.google}>
+        <button onClick={onGoogleButtonClick} className={styles.google__button}>
+          <Image
+            src={GoogleIcon}
+            alt='Google Login Button'
+            className={styles.google__icon}
+          />
+          <span>Continue with Google</span>
+        </button>
       </div>
     </main>
   );

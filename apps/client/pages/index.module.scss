@@ -1,2 +1,31 @@
+@use '../common/scss/variables' as var;
+
 .page {
+}
+
+.welcome {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.header {
+  width: auto;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 72px;
+  font-weight: 500;
+  font-family: var.$header-font;
+  line-height: 72px;
+}
+
+.tag {
+  background-color: #FDFF32;
+  margin-bottom: 12px;
+  padding: 2px 18px;
+  font-size: 18px;
+  font-family: var.$header-font;
 }

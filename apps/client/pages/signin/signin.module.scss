@@ -1,3 +1,107 @@
-.page {
-  color: red;
+@use '../../common/scss/variables' as var;
+
+.container {
+  display: flex;
+  max-width: 400px;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0 32px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  width: 100%;
+  margin-bottom: 16px;
+  font-size: 48px;
+  font-weight: 500;
+  font-family: var.$header-font;
+  text-align: center;
+}
+
+.form {
+  width: 100%;
+
+  &__input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 16px;
+    border-width: 2px;
+    border-color: #000;
+    border-radius: 6px;
+    padding: 14px 12px;
+    user-select: auto;
+  }
+
+  &__email, &__password {
+    @extend .form__input;
+    margin-bottom: 16px;
+  }
+  
+  &__submit {
+    @extend .form__input;
+    color: #FFF; 
+    background-color: #000;
+    cursor: pointer;
+    transition: all 0.2s;
+  
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+}
+
+.or {
+  margin: 32px 0;
+  width: 100%;
+  text-align: center;
+  position: relative;
+
+  &__text {
+    background-color: #FFF;
+    padding: 0 12px;
+  }
+
+  &::after {
+    display: block;
+    content: '';
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    font-size: 0;
+    position: absolute;
+    background-color: #000;
+    z-index: -1;
+  }
+}
+
+.google {
+  @extend .form__input;
+  padding: 13px 12px;
+  border-width: 2px;
+  border-color: #000;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  &__icon {
+    margin-right: 12px;
+    pointer-events: none;
+  }
+
+  &__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    background-color: transparent;
+    pointer-events: none;
+  }
 }
