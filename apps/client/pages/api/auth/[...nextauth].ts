@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { JwtPayload, Signin, Tokens } from '@authentication/types';
+import { JwtPayload, Signin, AuthTokens } from '@authentication/types';
 import { AxiosResponse } from 'axios';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
@@ -11,10 +11,10 @@ import { setCookie } from 'nookies';
 import axios from '../../../axios.config';
 
 async function refreshAccessToken(
-  tokenObject: Tokens & { user: JwtPayload },
+  tokenObject: AuthTokens & { user: JwtPayload },
 ): Promise<JWT> {
   try {
-    const tokensResponse: AxiosResponse<Tokens> = await axios.post(
+    const tokensResponse: AxiosResponse<AuthTokens> = await axios.post(
       '/api/auth/refresh',
       {},
       {
@@ -75,7 +75,7 @@ export const nextAuthOptions = (
   req: NextApiRequest,
   res: NextApiResponse,
 ): NextAuthOptions => {
-  let googleOauthTokens: Tokens | undefined;
+  let googleOauthTokens: AuthTokens | undefined;
 
   return {
     providers,

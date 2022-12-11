@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { Tokens } from '@authentication/types';
+import { AuthTokens } from '@authentication/types';
 import * as argon2 from 'argon2';
 
 import { TokensService } from '../tokens/tokens.service';
@@ -14,7 +14,7 @@ export class AuthService {
     private readonly tokensService: TokensService,
   ) {}
 
-  public async signupLocal(signupDto: SignupDto): Promise<Tokens> {
+  public async signupLocal(signupDto: SignupDto): Promise<AuthTokens> {
     const hashedPassword = await argon2.hash(signupDto.password);
 
     const user = await this.usersService.createUser({
@@ -36,7 +36,7 @@ export class AuthService {
     return tokens;
   }
 
-  public async signinLocal(signinDto: SigninDto): Promise<Tokens> {
+  public async signinLocal(signinDto: SigninDto): Promise<AuthTokens> {
     const user = await this.usersService.findUserByEmail(signinDto.email);
     if (!user) {
       throw new BadRequestException('User does not exist');
@@ -74,7 +74,7 @@ export class AuthService {
   public async rotateRefreshTokens(
     userId: number,
     refreshToken: string,
-  ): Promise<Tokens> {
+  ): Promise<AuthTokens> {
     return this.tokensService.rotateRefreshTokens(userId, refreshToken);
   }
 }

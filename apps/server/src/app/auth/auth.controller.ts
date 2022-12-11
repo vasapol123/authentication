@@ -7,7 +7,7 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { JwtPayload, Tokens } from '@authentication/types';
+import { JwtPayload, AuthTokens } from '@authentication/types';
 
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
@@ -30,7 +30,7 @@ export class AuthController {
   @Public()
   @Post('email/signup')
   @HttpCode(HttpStatus.CREATED)
-  public async signupLocal(@Body() signupDto: SignupDto): Promise<Tokens> {
+  public async signupLocal(@Body() signupDto: SignupDto): Promise<AuthTokens> {
     const tokens = await this.authService.signupLocal(signupDto);
 
     return tokens;
@@ -39,7 +39,7 @@ export class AuthController {
   @Public()
   @Post('email/signin')
   @HttpCode(HttpStatus.OK)
-  public async signinLocal(@Body() signinDto: SigninDto): Promise<Tokens> {
+  public async signinLocal(@Body() signinDto: SigninDto): Promise<AuthTokens> {
     const tokens = await this.authService.signinLocal(signinDto);
 
     return tokens;
@@ -48,7 +48,6 @@ export class AuthController {
   @Post('email/logout')
   @HttpCode(HttpStatus.OK)
   public async logout(@GetCurrentUserId() userId: number): Promise<boolean> {
-    console.log(userId);
     const boolean = await this.authService.logout(userId);
 
     return boolean;
@@ -61,7 +60,7 @@ export class AuthController {
   public async rotateRefreshToken(
     @GetCurrentUserId() userId: number,
     @GetCurrentUser('refreshToken') refreshToken: string,
-  ): Promise<Tokens> {
+  ): Promise<AuthTokens> {
     const tokens = await this.authService.rotateRefreshTokens(
       userId,
       refreshToken,

@@ -9,7 +9,7 @@ export interface UpdateUser extends Partial<CreateUser> {
   id: number;
 }
 
-export interface Tokens {
+export interface AuthTokens {
   jwtAccessToken: string;
   jwtRefreshToken: string;
 }

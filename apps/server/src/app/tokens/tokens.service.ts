@@ -1,7 +1,7 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Tokens } from '@authentication/types';
+import { AuthTokens } from '@authentication/types';
 import * as argon2 from 'argon2';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -17,7 +17,7 @@ export class TokensService {
   public async rotateRefreshTokens(
     userId: number,
     refreshToken: string,
-  ): Promise<Tokens> {
+  ): Promise<AuthTokens> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -60,7 +60,7 @@ export class TokensService {
     userId: number,
     email: string,
     displayName: string,
-  ): Promise<Tokens> {
+  ): Promise<AuthTokens> {
     const jwtPayload = {
       sub: userId,
       email,
