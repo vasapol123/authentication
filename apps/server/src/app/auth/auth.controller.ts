@@ -21,14 +21,14 @@ import { RefreshTokenGuard } from '../../common/guards/refresh-token.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('user')
+  @Get('email/user')
   @HttpCode(HttpStatus.OK)
   public getCurrentUserInfo(@GetCurrentUser() user: JwtPayload): JwtPayload {
     return user;
   }
 
   @Public()
-  @Post('local/signup')
+  @Post('email/signup')
   @HttpCode(HttpStatus.CREATED)
   public async signupLocal(@Body() signupDto: SignupDto): Promise<Tokens> {
     const tokens = await this.authService.signupLocal(signupDto);
@@ -37,7 +37,7 @@ export class AuthController {
   }
 
   @Public()
-  @Post('local/signin')
+  @Post('email/signin')
   @HttpCode(HttpStatus.OK)
   public async signinLocal(@Body() signinDto: SigninDto): Promise<Tokens> {
     const tokens = await this.authService.signinLocal(signinDto);
@@ -45,7 +45,7 @@ export class AuthController {
     return tokens;
   }
 
-  @Post('logout')
+  @Post('email/logout')
   @HttpCode(HttpStatus.OK)
   public async logout(@GetCurrentUserId() userId: number): Promise<boolean> {
     console.log(userId);

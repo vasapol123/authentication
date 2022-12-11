@@ -19,7 +19,7 @@ function Signup(): JSX.Element {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await axios.post('api/auth/local/signup', data);
+      const res = await axios.post('api/auth/email/signup', data);
     } catch (e) {
       console.log(e);
     }

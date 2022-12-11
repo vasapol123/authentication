@@ -51,7 +51,7 @@ const providers = [
     authorize: async (credentials: Signin) => {
       try {
         const tokensResponse: AxiosResponse = await axios.post(
-          '/api/auth/local/signin',
+          '/api/auth/email/signin',
           {
             email: credentials.email,
             password: credentials.password,
@@ -108,7 +108,7 @@ export const nextAuthOptions = (
       async jwt({ token, user }): Promise<JWT> {
         if (user) {
           const userResponse: AxiosResponse<JwtPayload> = await axios.get(
-            '/api/users',
+            '/api/auth/email/user',
             {
               headers: {
                 Authorization: `bearer ${
