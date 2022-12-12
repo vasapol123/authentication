@@ -10,9 +10,11 @@ import GoogleIcon from '../../assets/google_icon_ios.svg';
 import { loginSchema } from '../../validation/schema/login.schema';
 import useAuth from '../../hooks/useAuth';
 import axios from '../../axios.config';
+import { useRouter } from 'next/router';
 
 function Signin(): JSX.Element {
   // const isAuth = useAuth(true);
+  const router = useRouter();
 
   const {
     register,
@@ -78,8 +80,16 @@ function Signin(): JSX.Element {
         </button>
       </div>
       <div className={styles.link}>
+        <span
+          onClick={() => router.push('/reset-password')}
+          className={styles.link__color}
+        >
+          Forgot password?
+        </span>
+      </div>
+      <div className={styles.link}>
         No account?
-        <span onClick={() => signIn()} className={styles.link__signin}>
+        <span onClick={() => signIn()} className={styles.link__color}>
           Create account
         </span>
       </div>

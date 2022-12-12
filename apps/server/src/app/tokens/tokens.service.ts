@@ -1,10 +1,15 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AuthTokens } from '@authentication/types';
+import {
+  AuthTokens,
+  ForgotPasswordToken,
+  sendMailPayload,
+} from '@authentication/types';
 import * as argon2 from 'argon2';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class TokensService {
@@ -13,6 +18,26 @@ export class TokensService {
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {}
+
+  public async verifyToken(
+    token: string,
+    secret: string,
+  ): Promise<sendMailPayload> {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret,
+      });
+
+      return payload;
+    } catch (e) {
+      throw new UnauthorizedException(
+        // Capitalize the first letter of each error message word
+        e.message.replace(/(^\w{1})|(\s+\w{1})/g, (letter: string) =>
+          letter.toUpperCase(),
+        ),
+      );
+    }
+  }
 
   public async rotateRefreshTokens(
     userId: number,
@@ -79,5 +104,24 @@ export class TokensService {
     ]);
 
     return { jwtAccessToken, jwtRefreshToken };
+  }
+
+  public async getForgotPasswordToken(
+    userId: number,
+    email: string,
+    hashedPassword: string,
+  ): Promise<ForgotPasswordToken> {
+    const payload = {
+      id: userId,
+      email,
+    };
+
+    const forgotPasswordToken = await this.jwtService.signAsync(payload, {
+      secret:
+        this.config.get<string>('JWT_FORGOT_PASSWORD_SECRET') + hashedPassword,
+      expiresIn: '15m',
+    });
+
+    return forgotPasswordToken;
   }
 }

@@ -31,13 +31,16 @@ export class UsersService {
     }
   }
 
-  public async updateUser(updateUserDto: UpdateUserDto): Promise<User> {
+  public async updateUser(
+    userId: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
     const data = omit(updateUserDto, 'id');
 
     try {
       const user = await this.prisma.user.update({
         where: {
-          id: updateUserDto.id,
+          id: userId,
         },
         data,
       });

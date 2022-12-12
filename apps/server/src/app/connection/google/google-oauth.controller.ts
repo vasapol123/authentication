@@ -7,7 +7,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Tokens, UserProfile } from '@authentication/types';
+import { AuthTokens, UserProfile } from '@authentication/types';
 
 import { Public } from '../../../common/decorator/public.decorator';
 import { GoogleOauthService } from './google-oauth.service';
@@ -22,7 +22,7 @@ export class GoogleOauthController {
   @Post('signin')
   @Public()
   @UseGuards(GoogleOauthGuard)
-  public googleAuthSignin(@Req() req: Request): Promise<Tokens> {
+  public googleAuthSignin(@Req() req: Request): Promise<AuthTokens> {
     return this.googleOauthService.signinGoogle(req.user as UserProfile);
   }
 

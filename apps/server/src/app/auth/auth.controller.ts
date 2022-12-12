@@ -1,13 +1,14 @@
 import {
   Controller,
-  Post,
+  Param,
   Body,
+  Post,
   Get,
   HttpCode,
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { JwtPayload, AuthTokens } from '@authentication/types';
+import { JwtPayload, AuthTokens, sendMailPayload } from '@authentication/types';
 
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
@@ -16,6 +17,8 @@ import { GetCurrentUserId } from '../../common/decorator/get-current-user-id.dec
 import { GetCurrentUser } from '../../common/decorator/get-current-user.decorator';
 import { Public } from '../../common/decorator/public.decorator';
 import { RefreshTokenGuard } from '../../common/guards/refresh-token.guard';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -51,6 +54,38 @@ export class AuthController {
     const boolean = await this.authService.logout(userId);
 
     return boolean;
+  }
+
+  @Public()
+  @Post('email/forgot-password')
+  @HttpCode(HttpStatus.OK)
+  public async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<void> {
+    await this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Public()
+  @Get('email/reset-password/:id/:token')
+  @HttpCode(HttpStatus.OK)
+  public extractSendMailPayload(
+    @Param() params: Record<string, string>,
+  ): Promise<sendMailPayload> {
+    const { id, token } = params;
+
+    return this.authService.extractSendMailPayload(Number(id), token);
+  }
+
+  @Public()
+  @Post('email/reset-password/:id/:token')
+  @HttpCode(HttpStatus.OK)
+  public async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Param() params: Record<string, string>,
+  ): Promise<void> {
+    const { id, token } = params;
+
+    await this.authService.resetPassword(Number(id), token, resetPasswordDto);
   }
 
   @Public()

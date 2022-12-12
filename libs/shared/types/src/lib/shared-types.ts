@@ -5,14 +5,7 @@ export interface CreateUser {
   hashedRefreshToken?: string;
 }
 
-export interface UpdateUser extends Partial<CreateUser> {
-  id: number;
-}
-
-export interface AuthTokens {
-  jwtAccessToken: string;
-  jwtRefreshToken: string;
-}
+export type UpdateUser = Partial<CreateUser>;
 
 export interface Signup {
   email: string;
@@ -22,6 +15,29 @@ export interface Signup {
 }
 
 export type Signin = Pick<Signup, 'email' | 'password'>;
+
+export interface ForgotPassword {
+  email: string;
+}
+
+export type ForgotPasswordToken = string;
+
+export interface ResetPassword {
+  newPassword: string;
+  passwordConfirmation: string;
+}
+
+export interface sendMailPayload {
+  toEmail: string;
+  userId: number;
+  displayName: string;
+  forgotPasswordToken: ForgotPasswordToken;
+}
+
+export interface AuthTokens {
+  jwtAccessToken: string;
+  jwtRefreshToken: string;
+}
 
 export interface JwtPayload {
   sub: number;

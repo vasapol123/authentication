@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import { Tokens, UserProfile } from '@authentication/types';
+import { AuthTokens, UserProfile } from '@authentication/types';
 import * as argon2 from 'argon2';
 
 import { PrismaService } from '../../prisma/prisma.service';
@@ -19,7 +19,7 @@ export class GoogleOauthService {
     private readonly tokensService: TokensService,
   ) {}
 
-  public async signinGoogle(userProfile: UserProfile): Promise<Tokens> {
+  public async signinGoogle(userProfile: UserProfile): Promise<AuthTokens> {
     const externalAuth = await this.prisma.externalAuths.findUnique({
       where: {
         providerId: userProfile.providerId,
