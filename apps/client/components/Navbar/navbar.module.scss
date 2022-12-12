@@ -1,23 +1,36 @@
-.container {
-  margin-top: 16px;
-  display: grid;
+@import '../../scss/main';
+
+.navbar {
+  width: var(--base-max-width-navbar);
+  height: fit-content;
   position: fixed;
-  width: 100%;
-  justify-content: center;
-  column-gap: 8px;
-  grid-template-columns: auto auto;
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-top: 16px;
+  
+  &__nav {
+    width: 100%;
+    display: grid;
+    justify-content: end;
+    align-items: center;
+    column-gap: 8px;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr auto auto;
+  }
 }
 
-.button {
+%button {
   padding: 8px 20px;
   font-weight: 500;
   font-size: 14px;
   font-family : inherit;
   border-radius: 8px;
+  border-width: 2px;
+  border-color: #000;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s;
-  // box-shadow: 0px 4px 0px rgb(0, 0, 0 / 1);
 
   &:hover {
     transform: translateY(-4px);
@@ -25,16 +38,31 @@
 }
 
 .signin {
-  @extend .button;
+  @extend %button !optional;
 
   background-color: #FFF;
-  border-width: 2px;
-  border-color: #000;
 }
 
 .signup {
-  @extend .button;
+  @extend %button !optional;
 
   color: #FFF;
   background-color: #000;
+}
+
+.nav-item {
+  position: relative;
+
+  &__button {
+    background-color: transparent;
+    user-select: none;
+  }
+
+  &__home {
+    font-family: var(--font-secondary);
+    font-size: 18px;
+    color: #000;
+    text-decoration: none;
+    margin-right: auto;
+  }
 }

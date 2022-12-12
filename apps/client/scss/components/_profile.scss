@@ -1,0 +1,23 @@
+@use 'sass:map';
+
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  color: #FFF;
+  background-color: #000;
+  padding: 16px;
+  border-radius: 100px;
+  outline: 2px auto var(--clr-blue-500);
+  outline-offset: 2px;
+  cursor: pointer;
+  user-select: none;
+
+  &__letter {
+    line-height: 0;
+    font-size: 16px;
+    font-family: var(--font-secondary);
+  }
+}

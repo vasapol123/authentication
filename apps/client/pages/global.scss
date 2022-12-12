@@ -1,1 +1,23 @@
+@use '../scss/abstracts/colors' as *;
+@use '../scss/abstracts/fonts' as *;
+@use '../scss/abstracts/variables' as *;
+
 @import '../scss/base/reset';
+
+:root {
+  @each $color, $shades in $colors {
+    @each $shade, $value in $shades {
+      --clr-#{$color}-#{$shade}: #{$value};
+    }
+  }
+
+  @each $priority, $value in $fonts {
+    --font-#{$priority}: #{$value};
+  }
+
+  @each $key, $types in $bases {
+    @each $type, $value in $types {
+      --base-#{$key}-#{$type}: #{$value};
+    }
+  }
+}

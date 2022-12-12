@@ -1,0 +1,62 @@
+@import '../../../scss/main';
+
+.profile {
+  cursor: default;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  width: 250px;
+  padding: 18px 12px 6px;
+  margin-top: 16px;
+  border-width: 2px;
+  border-color: #000;
+  border-radius: 5px;
+  background-color: transparent;
+  font-size: 14px;
+  overflow: hidden;
+
+  &__display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--clr-grey-300);
+
+    div:nth-child(n + 2){
+      margin-left: 12px;
+    }
+  }
+}
+
+.user {
+  width: 100%;
+
+  p:first-child {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p:nth-child(2) {
+    margin-top: 6px;
+  }
+}
+
+.logout {
+  text-align: left;
+  width: 100%;
+  background-color: inherit;
+  font-size: inherit;
+  padding-left: 12px;
+  margin-top: 6px;
+  padding-top: 6px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-radius: 2px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--clr-grey-200);
+  }
+}

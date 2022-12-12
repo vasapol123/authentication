@@ -1,4 +1,3 @@
-@use 'sass:map';
 @import '../../scss/main';
 
 .container {
@@ -16,7 +15,7 @@
   margin-bottom: 24px;
   font-size: 48px;
   font-weight: 500;
-  font-family: $header-font;
+  font-family: var(--font-secondary);
   text-align: center;
 }
 
@@ -104,6 +103,6 @@
     margin-left: 6px;
     cursor: pointer;
     user-select: none;
-    color: map.get($colors, 'link')
+    color: var(--clr-blue-500)
   }
 }

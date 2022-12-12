@@ -2,14 +2,9 @@
 // This file contains all application-wide Sass variables.
 // -----------------------------------------------------------------------------
 
-
-/// Regular font family
-/// @type List
-$content-font: 'Inter', sans-serif;
-
-/// @type List
-$header-font: 'Space Grotesk', sans-serif;
-
-/// Container's maximum width
-/// @type Length
-$max-width: 400px !default;
+$bases: (
+  max-width: (
+    primary: 400px,
+    navbar: 1000px,
+  )
+)

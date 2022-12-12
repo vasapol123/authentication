@@ -1,0 +1,12 @@
+@import '../../scss/main';
+
+.container {
+  @extend %wrapper;
+
+  display: flex;
+  left: 0;
+  right: 0;
+  position: absolute;
+  justify-content: center;
+  margin-top: 16px;
+}

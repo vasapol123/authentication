@@ -1,5 +1,3 @@
-@import '../abstracts/variables';
-
 html, body, div, span, object, iframe, figure, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, code, em, img, small, strike, strong, sub, sup, tt, b, u, i, ol, ul, li, fieldset, form, label, table, caption, tbody, tfoot, thead, tr, th, td, main, canvas, embed, footer, header, nav, section, video {
   margin: 0;
   padding: 0;
@@ -16,7 +14,7 @@ html, body, div, span, object, iframe, figure, h1, h2, h3, h4, h5, h6, p, blockq
 ::before,
 ::after {
   font-weight: 500;
-  font-family: $content-font;
+  font-family: var(--font-primary);
   box-sizing: inherit;
   border-width: 0;
   border-style: solid;

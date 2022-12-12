@@ -1,8 +1,6 @@
-@import 
-  './abstracts/variables',
-  './abstracts/colors';
-
 // No import './base/reset' because all selectors not pure.
 @import './base/helpers';
 
-@import './components/input';
+@import 
+  './components/profile',
+  './components/input';
