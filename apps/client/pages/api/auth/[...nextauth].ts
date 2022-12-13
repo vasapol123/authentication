@@ -24,8 +24,6 @@ async function refreshAccessToken(
       },
     );
 
-    console.log(tokenObject);
-
     return {
       ...tokenObject,
       jwtAccessToken: tokensResponse.data.jwtAccessToken,
@@ -131,19 +129,21 @@ export const nextAuthOptions = (
         );
 
         if (shouldRefreshTime > 0) {
-          return Promise.resolve(token);
+          return token;
         }
 
-        const result = refreshAccessToken(token);
-        return Promise.resolve(result);
+        token = await refreshAccessToken(token);
+        return token;
       },
       async session({ session, token }) {
-        session.jwtAccessToken = token.jwtAccessToken;
-        session.jwtAccessTokenExpiry = token.jwtAccessTokenExpiry;
-        session.user = token.user;
-        session.error = token.error;
+        if (token) {
+          session.jwtAccessToken = token.jwtAccessToken;
+          session.jwtAccessTokenExpiry = token.jwtAccessTokenExpiry;
+          session.user = token.user;
+          session.error = token.error;
+        }
 
-        return Promise.resolve(session);
+        return session;
       },
     },
     pages: {
