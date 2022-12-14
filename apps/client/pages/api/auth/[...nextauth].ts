@@ -63,7 +63,19 @@ const providers = [
 
         return null;
       } catch (e) {
-        throw new Error('Error');
+        const {
+          response: { data },
+        } = e;
+
+        if (data.statusCode === 400 && data.error === 'Bad Request') {
+          if (data.message.match(/(password)/i)) {
+            throw new Error('password');
+          } else if (data.message.match(/(user)/i)) {
+            throw new Error('user');
+          }
+        }
+
+        throw new Error(null);
       }
     },
   }),

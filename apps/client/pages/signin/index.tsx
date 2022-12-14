@@ -1,39 +1,61 @@
-import React from 'react';
-import styles from './signin.module.scss';
-import { signIn } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { signIn, SignInResponse } from 'next-auth/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Signin as FormValues } from '@authentication/types';
-import Image from 'next/image';
+import classNames from 'classnames';
+import _ from 'lodash';
 
+import styles from './signin.module.scss';
 import GoogleIcon from '../../assets/google_icon_ios.svg';
-import { loginSchema } from '../../validation/schema/login.schema';
-import useAuth from '../../hooks/useAuth';
-import axios from '../../axios.config';
+import { signinSchema } from '../../validation/schema/signin.schema';
+import Loading from '../../components/Loading';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import useAuth from '../../hooks/useAuth';
 
 function Signin(): JSX.Element {
-  // const isAuth = useAuth(true);
+  useAuth(true);
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [signInResponse, setSignInResponse] = useState<null | SignInResponse>(
+    null,
+  );
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: yupResolver(loginSchema),
+  } = useForm<FormValues & { error: string }>({
+    resolver: yupResolver(signinSchema),
+  });
+
+  useEffect(() => {
+    watch(() => {
+      if (signInResponse) {
+        setSignInResponse(null);
+      }
+    });
   });
 
   const onSubmit = async (data: FormValues) => {
     try {
+      setIsLoading(true);
+
       const res = await signIn('credentials', {
         ...data,
-        callbackUrl: `${window.location.origin}`,
         redirect: false,
       });
-      console.log(res.error);
+
+      setIsLoading(false);
+      setSignInResponse(res);
+
+      router.push('/');
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
     }
   };
 
@@ -45,24 +67,72 @@ function Signin(): JSX.Element {
     }
   };
 
+  const handleFetchDataError: (type: string | null) => JSX.Element = (type) => {
+    if (type === 'password') {
+      return (
+        <p>
+          Your password is incorrect. If you can&#39;t remember your password,{' '}
+          <Link href='/reset-password' className={styles.error__link}>
+            reset it now.
+          </Link>
+        </p>
+      );
+    } else if (type === 'user') {
+      return (
+        <p>
+          This account does not exist. Enter a different account or{' '}
+          <Link href='/signup' className={styles.error__link}>
+            create a new one.
+          </Link>
+        </p>
+      );
+    }
+
+    return <p>Unknown error</p>;
+  };
+
   return (
     <main className={styles.container}>
       <div className={styles.title}>Sign In</div>
+      <div className={styles.error}>
+        {signInResponse &&
+          signInResponse.error &&
+          !signInResponse.ok &&
+          handleFetchDataError(signInResponse.error)}
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <input
           {...register('email', { required: true })}
           placeholder='Email'
-          className={styles.form__email}
+          className={classNames(styles.form__email, {
+            [styles['form__email-error']]: !!errors.email,
+          })}
         />
-        <p>{errors.email?.message as string}</p>
+        <p
+          className={classNames(styles['form__email-error-message'], {
+            [styles.hidden]: !errors.email,
+          })}
+        >
+          {errors.email && _.capitalize(errors.email?.message)}
+        </p>
         <input
           {...register('password', { required: true })}
           type='password'
           placeholder='Password'
-          className={styles.form__password}
+          className={classNames(styles.form__password, {
+            [styles['form__password-error']]: !!errors.password,
+          })}
         />
-        <p>{errors.password?.message as string}</p>
-        <input type='submit' value='Submit' className={styles.form__submit} />
+        <p
+          className={classNames(styles['form__password-error-message'], {
+            [styles.hidden]: !errors.password,
+          })}
+        >
+          {errors.password && _.capitalize(errors.password?.message)}
+        </p>
+        <button type='submit' className={styles.form__submit}>
+          {isLoading ? <Loading /> : <div>Sign in</div>}
+        </button>
       </form>
 
       <div className={styles.or}>
@@ -80,18 +150,15 @@ function Signin(): JSX.Element {
         </button>
       </div>
       <div className={styles.link}>
-        <span
-          onClick={() => router.push('/reset-password')}
-          className={styles.link__color}
-        >
+        <Link href='/reset-password' className={styles.link__color}>
           Forgot password?
-        </span>
+        </Link>
       </div>
       <div className={styles.link}>
         No account?
-        <span onClick={() => signIn()} className={styles.link__color}>
+        <Link href='/signup' className={styles.link__color}>
           Create account
-        </span>
+        </Link>
       </div>
     </main>
   );

@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Signin as FormValues } from '@authentication/types';
 
-import { loginSchema } from '../../validation/schema/login.schema';
+import { loginSchema } from '../../validation/schema/signin.schema';
 import axios from '../../axios.config';
 import { parseCookies } from 'nookies';
 
