@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import {
   AuthTokens,
   ForgotPasswordToken,
-  sendMailPayload,
+  SendMailPayload,
 } from '@authentication/types';
 import * as argon2 from 'argon2';
 
@@ -99,7 +99,7 @@ export class AuthService {
       user.hashedPassword,
     );
 
-    const payload: sendMailPayload = {
+    const payload: SendMailPayload = {
       toEmail: forgotPasswordDto.email,
       userId: user.id,
       displayName: user.displayName,
@@ -116,13 +116,12 @@ export class AuthService {
     if (!mailerResponse) {
       throw new ForbiddenException('Send email error');
     }
-    console.log('Sent');
   }
 
   public async extractSendMailPayload(
     userId: number,
     forgotPasswordToken: ForgotPasswordToken,
-  ): Promise<sendMailPayload> {
+  ): Promise<SendMailPayload> {
     const user = await this.usersService.findUserById(userId);
     if (!user) {
       throw new BadRequestException('User does not exist');

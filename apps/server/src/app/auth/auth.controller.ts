@@ -8,7 +8,7 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { JwtPayload, AuthTokens, sendMailPayload } from '@authentication/types';
+import { JwtPayload, AuthTokens, SendMailPayload } from '@authentication/types';
 
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';
@@ -70,7 +70,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   public extractSendMailPayload(
     @Param() params: Record<string, string>,
-  ): Promise<sendMailPayload> {
+  ): Promise<SendMailPayload> {
     const { id, token } = params;
 
     return this.authService.extractSendMailPayload(Number(id), token);

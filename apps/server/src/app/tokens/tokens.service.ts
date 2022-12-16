@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import {
   AuthTokens,
   ForgotPasswordToken,
-  sendMailPayload,
+  SendMailPayload,
 } from '@authentication/types';
 import * as argon2 from 'argon2';
 
@@ -22,7 +22,7 @@ export class TokensService {
   public async verifyToken(
     token: string,
     secret: string,
-  ): Promise<sendMailPayload> {
+  ): Promise<SendMailPayload> {
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret,

@@ -27,7 +27,7 @@ export interface ResetPassword {
   passwordConfirmation: string;
 }
 
-export interface sendMailPayload {
+export interface SendMailPayload {
   toEmail: string;
   userId: number;
   displayName: string;

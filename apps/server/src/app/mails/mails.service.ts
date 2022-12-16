@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
-import { sendMailPayload } from '@authentication/types';
+import { SendMailPayload } from '@authentication/types';
 
 @Injectable()
 export class MailsService {
   constructor(private readonly mailerService: MailerService) {}
 
   public async sendResetPasswordEmail(
-    payload: sendMailPayload,
+    payload: SendMailPayload,
     sendMailOptions: ISendMailOptions,
   ): Promise<boolean> {
     try {
