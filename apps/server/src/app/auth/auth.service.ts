@@ -34,7 +34,7 @@ export class AuthService {
       hashedPassword,
     });
 
-    const tokens = await this.tokensService.getTokens(
+    const tokens = await this.tokensService.getAuthTokens(
       user.id,
       user.email,
       user.displayName,
@@ -61,7 +61,7 @@ export class AuthService {
       throw new BadRequestException('Password invalid');
     }
 
-    const tokens = await this.tokensService.getTokens(
+    const tokens = await this.tokensService.getAuthTokens(
       user.id,
       user.email,
       user.displayName,

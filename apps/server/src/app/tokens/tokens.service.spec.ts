@@ -118,8 +118,8 @@ describe('TokensService', () => {
     });
 
     it('should call TokensService with expect params', async () => {
-      const getTokensSpy = jest
-        .spyOn(service, 'getTokens')
+      const getAuthTokensSpy = jest
+        .spyOn(service, 'getAuthTokens')
         .mockResolvedValueOnce({
           jwtAccessToken: faker.datatype.uuid(),
           jwtRefreshToken: faker.datatype.uuid(),
@@ -130,7 +130,7 @@ describe('TokensService', () => {
 
       await service.rotateRefreshTokens(args.userId, args.refreshToken);
 
-      expect(getTokensSpy).toHaveBeenCalledWith(
+      expect(getAuthTokensSpy).toHaveBeenCalledWith(
         fakeUser.id,
         fakeUser.email,
         fakeUser.displayName,
@@ -175,7 +175,7 @@ describe('TokensService', () => {
     });
   });
 
-  describe('getTokens', () => {
+  describe('getAuthTokens', () => {
     const args = {
       userId: fakeUser.id,
       email: fakeUser.email,
@@ -189,7 +189,7 @@ describe('TokensService', () => {
         displayName: args.displayName,
       };
 
-      await service.getTokens(
+      await service.getAuthTokens(
         fakeUser.id,
         fakeUser.email,
         fakeUser.displayName,
@@ -204,7 +204,11 @@ describe('TokensService', () => {
 
     it('should create tokens and return those', async () => {
       await expect(
-        service.getTokens(fakeUser.id, fakeUser.email, fakeUser.displayName),
+        service.getAuthTokens(
+          fakeUser.id,
+          fakeUser.email,
+          fakeUser.displayName,
+        ),
       ).resolves.toEqual({
         jwtAccessToken: expect.any(String),
         jwtRefreshToken: expect.any(String),

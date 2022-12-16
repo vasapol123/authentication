@@ -33,7 +33,7 @@ export class GoogleOauthService {
 
     const user = await this.usersService.findUserById(externalAuth.userId);
 
-    const tokens = await this.tokensService.getTokens(
+    const tokens = await this.tokensService.getAuthTokens(
       user.id,
       user.email,
       user.displayName,

@@ -60,7 +60,11 @@ export class TokensService {
       throw new ForbiddenException('Access Denied');
     }
 
-    const tokens = await this.getTokens(user.id, user.email, user.displayName);
+    const tokens = await this.getAuthTokens(
+      user.id,
+      user.email,
+      user.displayName,
+    );
     await this.updateRefreshToken(user.id, tokens.jwtRefreshToken);
 
     return tokens;
@@ -81,7 +85,7 @@ export class TokensService {
     });
   }
 
-  public async getTokens(
+  public async getAuthTokens(
     userId: number,
     email: string,
     displayName: string,

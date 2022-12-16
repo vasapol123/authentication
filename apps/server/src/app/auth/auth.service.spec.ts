@@ -33,7 +33,7 @@ describe('AuthService', () => {
   };
 
   const mockTokensService = {
-    getTokens: jest.fn<Promise<AuthTokens>, []>().mockResolvedValue({
+    getAuthTokens: jest.fn<Promise<AuthTokens>, []>().mockResolvedValue({
       jwtAccessToken: faker.datatype.uuid(),
       jwtRefreshToken: faker.datatype.uuid(),
     }),
@@ -108,7 +108,7 @@ describe('AuthService', () => {
     it('should call tokensService with expect params', async () => {
       await service.signupLocal(signupDto);
 
-      expect(mockTokensService.getTokens).toHaveBeenCalledWith(
+      expect(mockTokensService.getAuthTokens).toHaveBeenCalledWith(
         fakeUser.id,
         fakeUser.email,
         fakeUser.displayName,
@@ -163,7 +163,7 @@ describe('AuthService', () => {
     it('should call tokensService with expect params', async () => {
       await service.signinLocal(signinDto);
 
-      expect(mockTokensService.getTokens).toHaveBeenCalledWith(
+      expect(mockTokensService.getAuthTokens).toHaveBeenCalledWith(
         fakeUser.id,
         fakeUser.email,
         fakeUser.displayName,
