@@ -1,31 +1,20 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 
+import { createRandomUser } from '../../test/unit/fixtures/user.fixture';
 import { PrismaService } from '../prisma/prisma.service';
 import { TokensService } from './tokens.service';
 import { AppModule } from '../app.module';
 
 describe('TokensService', () => {
   let service: TokensService;
-
-  const user: User = {
-    id: Date.now(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    email: 'jonathan@example.com',
-    displayName: 'Jonathan',
-    hashedPassword: 'fakeHashedPassword',
-    hashedRefreshToken: 'fakeRefreshToken',
-  };
+  const fakeUser = createRandomUser();
 
   const mockPrismaService = {
     user: {
       update: jest.fn(),
-      findUnique: jest.fn().mockResolvedValue(user),
+      findUnique: jest.fn().mockResolvedValue(fakeUser),
     },
   };
 

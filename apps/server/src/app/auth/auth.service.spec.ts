@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import * as argon2 from 'argon2';
 
+import { createRandomUser } from '../../test/unit/fixtures/user.fixture';
 import { AuthService } from './auth.service';
 import { TokensService } from '../tokens/tokens.service';
 import { UsersService } from '../users/users.service';
@@ -20,18 +20,6 @@ import {
 } from '@authentication/types';
 
 jest.mock('argon2');
-
-function createRandomUser(): User {
-  return {
-    id: faker.datatype.number(),
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
-    email: faker.internet.email(),
-    displayName: faker.name.firstName(),
-    hashedPassword: faker.datatype.uuid(),
-    hashedRefreshToken: faker.datatype.uuid(),
-  };
-}
 
 describe('AuthService', () => {
   let service: AuthService;

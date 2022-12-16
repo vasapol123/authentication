@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
-import { User } from '@prisma/client';
 import { AuthTokens, JwtPayload, SendMailPayload } from '@authentication/types';
 
+import { createRandomUser } from '../../test/unit/fixtures/user.fixture';
 import { AppModule } from '../app.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -10,18 +10,6 @@ import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-
-function createRandomUser(): User {
-  return {
-    id: faker.datatype.number(),
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
-    email: faker.internet.email(),
-    displayName: faker.name.firstName(),
-    hashedPassword: faker.datatype.uuid(),
-    hashedRefreshToken: faker.datatype.uuid(),
-  };
-}
 
 describe('AuthController', () => {
   let controller: AuthController;
