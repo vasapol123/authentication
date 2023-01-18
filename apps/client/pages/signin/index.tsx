@@ -139,8 +139,8 @@ function Signin(): JSX.Element {
         <span className={styles.or__text}>or</span>
       </div>
 
-      <div className={styles.google}>
-        <button onClick={onGoogleButtonClick} className={styles.google__button}>
+      <div className={styles.google} onClick={onGoogleButtonClick}>
+        <button className={styles.google__button}>
           <Image
             src={GoogleIcon}
             alt='Google Login Button'
